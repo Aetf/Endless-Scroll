@@ -213,33 +213,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 444f375559a6d014582331eda5509352, type: 2}
   m_IsPrefabParent: 0
---- !u!1 &1173324713
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1173324714}
-  m_Layer: 0
-  m_Name: groundCheck
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1173324714
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1173324713}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.11800003, z: 0}
-  m_LocalScale: {x: 2, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1930766730}
-  m_RootOrder: 0
 --- !u!1001 &1930766729
 Prefab:
   m_ObjectHideFlags: 0
@@ -282,7 +255,3 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4f2e7c38f222f8846877dda59a72b7bc, type: 2}
   m_IsPrefabParent: 0
---- !u!4 &1930766730 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 432268, guid: 4f2e7c38f222f8846877dda59a72b7bc, type: 2}
-  m_PrefabInternal: {fileID: 1930766729}
