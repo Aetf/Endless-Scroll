@@ -266,6 +266,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
+  useMonoTarget: 1
   damping: 1
   lookAheadFactor: 3
   lookAheadReturnSpeed: .5
@@ -285,6 +286,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollSpeed: .00999999978
+  target: {fileID: 0}
+  useMonoTarget: 1
 --- !u!114 &11498452
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -297,6 +300,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
+  useMonoTarget: 1
   damping: 1
   lookAheadFactor: 3
   lookAheadReturnSpeed: 30
