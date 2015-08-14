@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnlimitedCodeWorks;
 using UnlimitedCodeWorks.Events.Character;
 
-public class OffsetMaterial : MonoBehaviour {
+public class ScrollBackgroundCore : MonoBehaviour {
 
     public float scrollSpeed = 0.3f;
 
