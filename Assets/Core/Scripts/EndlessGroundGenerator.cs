@@ -13,34 +13,19 @@ public class EndlessGroundGenerator : MonoBehaviour {
 
     private Transform playerTrans;
 
-    private EdgeCollider2D edge;
-
-    private List<GameObject> tiles = new List<GameObject>();
-    private float leftEdge = 0f;
-    private float rightEdge = 0f;
-
 	// Use this for initialization
 	void Start () {
-        edge = GetComponent<EdgeCollider2D>();
         playerTrans = GameObject.FindGameObjectWithTag("Player").transform;
+        GenerateGroundAround(playerTrans.position.x);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        GenerateGroundAround(playerTrans.position.x);
 	}
 
     void GenerateGroundAround(float x) {
-        if (!InTilesRange(x)) {
-            Debug.Log(string.Format("Warning: generating ground around {0} which is outside current ground, this is not supported now.", x));
-        }
-
-        if (NearLeftEdge(x)) {
-            CreateTilesWithRightEdgeAt(new Vector2(leftEdge, groundAltitude), tilesPerGen);
-        }
-        if (NearRightEdge(x)) {
-            CreateTilesWithLeftEdgeAt(new Vector2(rightEdge, groundAltitude), tilesPerGen);
-        }
+        CreateTilesWithRightEdgeAt(new Vector2(x, groundAltitude), tilesPerGen);
+        CreateTilesWithLeftEdgeAt(new Vector2(x, groundAltitude), tilesPerGen);
     }
 
     void CreateTilesWithLeftEdgeAt(Vector2 pos, int tilesCount) {
@@ -86,34 +71,6 @@ public class EndlessGroundGenerator : MonoBehaviour {
             Quaternion.identity) as GameObject;
         tile.transform.parent = transform;
 
-        float right = position.x + tileWidth / 2;
-        float left = position.x - tileWidth / 2;
-        if (right > rightEdge)
-            rightEdge = right;
-        if (left < leftEdge)
-            leftEdge = left;
-        UpdateEdgeCollider();
-
-        tiles.Add(tile);
         return tile;
-    }
-
-    void UpdateEdgeCollider() {
-        Vector2[] points = edge.points;
-        points[0].x = leftEdge;
-        points[1].x = rightEdge;
-        edge.points = points;
-    }
-
-    bool InTilesRange(float x) {
-        return x >= leftEdge && x <= rightEdge;
-    }
-
-    bool NearLeftEdge(float x) {
-        return x >= leftEdge && x <= leftEdge + threshould;
-    }
-
-    bool NearRightEdge(float x) {
-        return x <= rightEdge && x >= rightEdge - threshould;
     }
 }

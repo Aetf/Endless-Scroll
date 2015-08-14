@@ -22,9 +22,6 @@ public class OffsetMaterial : MonoBehaviour {
         groundRenderer = transform.GetChild(0).gameObject.GetComponent<Renderer>();
         playerTrans = GameObject.FindGameObjectWithTag("Player").transform;
 
-        // Set main camera bounds
-        Camera.main.GetComponent<CameraFollow>().SetMovingBounds(groundRenderer.bounds);
-
         // Set and apply initial values
         scrollPosition = 0f;
         lastX = playerTrans.position.x;

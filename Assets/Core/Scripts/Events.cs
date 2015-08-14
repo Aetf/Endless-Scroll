@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System;
 
 namespace UnlimitedCodeWorks.Events {
 
@@ -12,6 +10,49 @@ namespace UnlimitedCodeWorks.Events {
         /// Whether or not cancel this event
         /// </summary>
         bool Cancel { get; set; }
+    }
+
+    namespace Chunks {
+        /// <summary>
+        /// Raised when a chunk missing is detected by a checker.
+        /// </summary>
+        public class ChunkMissing : GameEvent {
+            /// <summary>
+            /// The exact position the missing detected.
+            /// </summary>
+            public Vector2 Position { get; private set; }
+
+            /// <summary>
+            /// The checker that detected the missing.
+            /// </summary>
+            public CheckerCore Checker { get; private set; }
+
+            public ChunkMissing(CheckerCore checker, Vector2 position) {
+                Checker = checker;
+                Position = position;
+            }
+        }
+
+        /// <summary>
+        /// Raised when a destroyer collides with a chunk
+        /// </summary>
+        public class ChunkDestroying : GameEvent {
+            /// <summary>
+            /// The chunk the collision occurred.
+            /// </summary>
+            public GameObject Chunk { get; private set; }
+
+            /// <summary>
+            /// The destroyer raising the event
+            /// </summary>
+            public DestroyerCore Destroyer { get; private set; }
+
+            public ChunkDestroying(DestroyerCore destroyer, GameObject chunk) {
+                Destroyer = destroyer;
+                Chunk = chunk;
+            }
+        }
+
     }
 
     namespace Character {
@@ -94,6 +135,21 @@ namespace UnlimitedCodeWorks.Events {
             /// </summary>
             /// <param name="player"></param>
             public PlayerMoved(GameObject player) : base(player) { }
+        }
+
+        /// <summary>
+        /// Raised after a player facing direction changed
+        /// </summary>
+        public class PlayerFacingChanged : CharacterEvent {
+            /// <summary>
+            /// Player's new facing direction
+            /// </summary>
+            public bool FacingRight { get; private set; }
+
+            public PlayerFacingChanged(GameObject player, bool isFacingRight)
+                : base(player) {
+                FacingRight = isFacingRight;
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour {
 	public float jumpForce = 1000f;			// Amount of force added when the player jumps.
 
 
+    private Rigidbody2D rb2d;               // Cache frequently used component reference.
 	private Transform groundCheck;			// A position marking where to check if the player is grounded.
 	private bool grounded = false;			// Whether or not the player is grounded.
 	private Animator anim;					// Reference to the player's animator component.
@@ -19,24 +20,15 @@ public class PlayerController : MonoBehaviour {
 	[HideInInspector]
 	public bool jump = false;				// Condition for whether the player should jump.
 
-    private Rigidbody2D rb2d;
-
 	// Use this for initialization
 	void Start () {
         rb2d = GetComponent<Rigidbody2D>();
 		groundCheck = transform.Find("groundCheck");
+        // force a change event to get everything in sync
+        EventHub.RaiseEvent(new PlayerFacingChanged(gameObject, facingRight));
     }
 
-	// Update is called once per frame
-	void Update () {
-		// The player is grounded if a linecast to the groundcheck position hits anything on the ground layer.
-		grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
-
-		// If the jump button is pressed and the player is grounded then the player should jump.
-		if(Input.GetButtonDown("Jump") && grounded)
-			jump = true;
-	}
-
+    // 0..n times per frame before physical simulation
     void FixedUpdate() {
 		// Cache the horizontal input.
 		float h = Input.GetAxis("Horizontal");
@@ -81,6 +73,19 @@ public class PlayerController : MonoBehaviour {
 		}
     }
 
+	// Update is called once per frame, after rendering
+	void Update () {
+		// The player is grounded if a linecast to the groundcheck position hits anything on the ground layer.
+		grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
+
+		// If the jump button is pressed and the player is grounded then the player should jump.
+		if(Input.GetButtonDown("Jump") && grounded)
+			jump = true;
+
+        // Raise moved event for anyone who needs tracking the player.
+        EventHub.RaiseEvent(new PlayerMoved(gameObject));
+	}
+
     bool ShouldMove(Vector3 target) {
         PlayerMoving evt = new PlayerMoving(gameObject, target);
         EventHub.RaiseEvent(evt);
@@ -96,6 +101,10 @@ public class PlayerController : MonoBehaviour {
 		Vector3 theScale = transform.localScale;
 		theScale.x *= -1;
 		transform.localScale = theScale;
+
+
+        // Raise facing changed event
+        EventHub.RaiseEvent(new PlayerFacingChanged(gameObject, facingRight));
 	}
 
     void Move(float delta) {
