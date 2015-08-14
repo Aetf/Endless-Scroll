@@ -15,9 +15,10 @@ public class ScrollBackgroundCore : MonoBehaviour {
 
     private float scrollPosition;
     private float lastX;
+    private Vector2 savedOffset;
 
     // Use this for initialization
-    void Start () {
+    void Start() {
         // Setup references
         groundRenderer = transform.GetChild(0).gameObject.GetComponent<Renderer>();
         playerTrans = GameObject.FindGameObjectWithTag("Player").transform;
@@ -25,13 +26,18 @@ public class ScrollBackgroundCore : MonoBehaviour {
         // Set and apply initial values
         scrollPosition = 0f;
         lastX = playerTrans.position.x;
+        savedOffset = groundRenderer.sharedMaterial.mainTextureOffset;
         Scroll(0f);
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    }
+
+    // Update is called once per frame
+    void Update() {
         TrackPlayer();
-	}
+    }
+
+    public void OnDestroy() {
+        groundRenderer.sharedMaterial.mainTextureOffset = savedOffset;
+    }
 
     void TrackPlayer() {
         float delta = playerTrans.position.x - lastX;
