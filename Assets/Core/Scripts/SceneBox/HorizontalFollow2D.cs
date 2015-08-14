@@ -1,7 +1,8 @@
 ﻿using System;
 using UnityEngine;
+using UnlimitedCodeWorks;
 
-public class VerticalFollow2D : MonoBehaviour {
+public class HorizontalFollow2D : MonoBehaviour {
     public enum ChangeStrategy {
         IgnoreChange,
         ImmediateChange,
@@ -9,12 +10,13 @@ public class VerticalFollow2D : MonoBehaviour {
     }
 
     public Transform target;
+    public bool useMonoTarget = true;
     public float damping = 1;
     public float lookAheadFactor = 3;
     public float lookAheadReturnSpeed = 0.5f;
     public float lookAheadMoveThreshold = 0.1f;
-    public ChangeStrategy xChangeStrategy = ChangeStrategy.ImmediateChange;
-    public bool keepVerticalOffset = true;
+    public ChangeStrategy yChangeStrategy = ChangeStrategy.ImmediateChange;
+    public bool keepHorizontalOffset = true;
     public bool forceTopLevelObject = false;
 
     private Vector3 m_Offset;
@@ -24,9 +26,12 @@ public class VerticalFollow2D : MonoBehaviour {
 
     // Use this for initialization
     private void Start() {
-        if (keepVerticalOffset) {
+        if (useMonoTarget) {
+            target = MonoTargetHub.Player;
+        }
+        if (keepHorizontalOffset) {
             m_Offset = transform.position - target.position;
-            m_Offset.x = 0f;
+            m_Offset.y = 0f;
         } else {
             m_Offset = Vector3.zero;
         }
@@ -35,18 +40,19 @@ public class VerticalFollow2D : MonoBehaviour {
             transform.parent = null;
     }
 
+
     // Update is called once per frame
     private void Update() {
         Vector3 targetPos = target.position
-            + (keepVerticalOffset ? m_Offset : Vector3.forward * m_Offset.z);
+            + (keepHorizontalOffset ? m_Offset : Vector3.forward * m_Offset.z);
 
         // only update lookahead pos if accelerating or changed direction
-        float yMoveDelta = (targetPos - m_LastTargetPosition).y;
+        float xMoveDelta = (targetPos - m_LastTargetPosition).x;
 
-        bool updateLookAheadTarget = Mathf.Abs(yMoveDelta) > lookAheadMoveThreshold;
+        bool updateLookAheadTarget = Mathf.Abs(xMoveDelta) > lookAheadMoveThreshold;
 
         if (updateLookAheadTarget) {
-            m_LookAheadPos = lookAheadFactor * Vector3.up * Mathf.Sign(yMoveDelta);
+            m_LookAheadPos = lookAheadFactor * Vector3.right * Mathf.Sign(xMoveDelta);
         } else {
             m_LookAheadPos = Vector3.MoveTowards(m_LookAheadPos, Vector3.zero, Time.deltaTime * lookAheadReturnSpeed);
         }
@@ -54,12 +60,12 @@ public class VerticalFollow2D : MonoBehaviour {
         Vector3 aheadTargetPos = targetPos + m_LookAheadPos;
         Vector3 newPos = Vector3.SmoothDamp(transform.position, aheadTargetPos, ref m_CurrentVelocity, damping);
 
-        switch (xChangeStrategy) {
+        switch (yChangeStrategy) {
         case ChangeStrategy.IgnoreChange:
-            newPos.x = transform.position.x;
+            newPos.y = transform.position.y;
             break;
         case ChangeStrategy.ImmediateChange:
-            newPos.x = targetPos.x;
+            newPos.y = targetPos.y;
             break;
         }
         transform.position = newPos;
