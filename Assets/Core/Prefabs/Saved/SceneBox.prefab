@@ -271,6 +271,7 @@ MonoBehaviour:
   lookAheadReturnSpeed: .5
   lookAheadMoveThreshold: .100000001
   yChangeStrategy: 0
+  keepHorizontalOffset: 0
   forceTopLevelObject: 0
 --- !u!114 &11445606
 MonoBehaviour:
@@ -298,9 +299,10 @@ MonoBehaviour:
   target: {fileID: 0}
   damping: 1
   lookAheadFactor: 3
-  lookAheadReturnSpeed: .5
+  lookAheadReturnSpeed: 30
   lookAheadMoveThreshold: .100000001
-  xChangeStrategy: 1
+  xChangeStrategy: 0
+  keepVerticalOffset: 1
   forceTopLevelObject: 0
 --- !u!124 &12475004
 Behaviour:

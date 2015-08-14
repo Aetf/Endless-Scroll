@@ -14,17 +14,23 @@ public class HorizontalFollow2D : MonoBehaviour {
     public float lookAheadReturnSpeed = 0.5f;
     public float lookAheadMoveThreshold = 0.1f;
     public ChangeStrategy yChangeStrategy = ChangeStrategy.ImmediateChange;
+    public bool keepHorizontalOffset = true;
     public bool forceTopLevelObject = false;
 
-    private float m_OffsetZ;
+    private Vector3 m_Offset;
     private Vector3 m_LastTargetPosition;
     private Vector3 m_CurrentVelocity;
     private Vector3 m_LookAheadPos;
 
     // Use this for initialization
     private void Start() {
-        m_LastTargetPosition = target.position;
-        m_OffsetZ = (transform.position - target.position).z;
+        if (keepHorizontalOffset) {
+            m_Offset = transform.position - target.position;
+            m_Offset.y = 0f;
+        } else {
+            m_Offset = Vector3.zero;
+        }
+        m_LastTargetPosition = target.position + m_Offset;
         if (forceTopLevelObject)
             transform.parent = null;
     }
@@ -32,8 +38,11 @@ public class HorizontalFollow2D : MonoBehaviour {
 
     // Update is called once per frame
     private void Update() {
+        Vector3 targetPos = target.position
+            + (keepHorizontalOffset ? m_Offset : Vector3.forward * m_Offset.z);
+
         // only update lookahead pos if accelerating or changed direction
-        float xMoveDelta = (target.position - m_LastTargetPosition).x;
+        float xMoveDelta = (targetPos - m_LastTargetPosition).x;
 
         bool updateLookAheadTarget = Mathf.Abs(xMoveDelta) > lookAheadMoveThreshold;
 
@@ -43,7 +52,7 @@ public class HorizontalFollow2D : MonoBehaviour {
             m_LookAheadPos = Vector3.MoveTowards(m_LookAheadPos, Vector3.zero, Time.deltaTime * lookAheadReturnSpeed);
         }
 
-        Vector3 aheadTargetPos = target.position + m_LookAheadPos + Vector3.forward * m_OffsetZ;
+        Vector3 aheadTargetPos = targetPos + m_LookAheadPos;
         Vector3 newPos = Vector3.SmoothDamp(transform.position, aheadTargetPos, ref m_CurrentVelocity, damping);
 
         switch (yChangeStrategy) {
@@ -51,11 +60,11 @@ public class HorizontalFollow2D : MonoBehaviour {
             newPos.y = transform.position.y;
             break;
         case ChangeStrategy.ImmediateChange:
-            newPos.y = target.position.y;
+            newPos.y = targetPos.y;
             break;
         }
         transform.position = newPos;
 
-        m_LastTargetPosition = target.position;
+        m_LastTargetPosition = targetPos;
     }
 }
