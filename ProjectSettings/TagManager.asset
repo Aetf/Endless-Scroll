@@ -5,13 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
-  - Enemy
-  - ExplosionFX
-  - Bullet
-  - ground
-  - Obstacle
-  - HealthBar
-  - BombPickup
+  - Infrastructure
+  - ChunkWrapper
   layers:
   - Default
   - TransparentFX
@@ -21,12 +16,12 @@ TagManager:
   - UI
   - 
   - 
+  - Destroyer
   - Ground
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Background
+  - Foreground
+  - Mobs
+  - Player
   - 
   - 
   - 
