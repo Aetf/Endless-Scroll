@@ -60,9 +60,11 @@ public class ChunkLoaderCore : MonoBehaviour {
 
     #region Checkers
     private GameObject checkersParent = null;
-    private CheckerCore leftChecker = null;
-    private CheckerCore rightChecker = null;
+    private CheckerCore edgeChecker = null;
     private List<CheckerCore> middleCheckers = new List<CheckerCore>();
+    private Vector2 leftCheckerOffset;
+    private Vector2 rightCheckerOffset;
+    private bool checkerFacingRight;
     private bool checkerInitialized = false;
 
     float InitializeCheckers() {
@@ -72,7 +74,7 @@ public class ChunkLoaderCore : MonoBehaviour {
         // Listen to ChunkMissing event
         EventHub.AddListener<ChunkMissing>(e => {
             EnsureChunkAround(e.Position);
-            if (e.Checker != leftChecker && e.Checker != rightChecker) {
+            if (e.Checker != edgeChecker) {
                 // middle checkers are disabled once used.
                 Debug.Log("Disable checker at " + e.Checker.transform.position);
                 e.Checker.SetCheckerEnabled(false);
@@ -82,7 +84,8 @@ public class ChunkLoaderCore : MonoBehaviour {
         // Cleanup any old checkers;
         CleanupCheckers();
         // Make all checkers' parent object
-        checkersParent = new GameObject("checkers");
+        checkersParent = new GameObject("Checkers");
+        checkersParent.transform.Reset();
         checkersParent.transform.parent = transform;
 
         // Calculate positions and create checkers
@@ -98,18 +101,23 @@ public class ChunkLoaderCore : MonoBehaviour {
                 middleCheckers.Add(CheckerCore.Create(checkersParent, new Vector2(x, markerY)));
                 x -= chunkSize.x;
             }
-            leftChecker = CheckerCore.Create(checkersParent, new Vector2(x, markerY));
+            leftCheckerOffset = new Vector2(x, markerY);
             // right side
             x = start; // start from `chunkExtent`, not `+=`
             for (int i = 0; i!= halfMiddle; i++) {
                 middleCheckers.Add(CheckerCore.Create(checkersParent, new Vector2(x, markerY)));
                 x += chunkSize.x;
             }
-            rightChecker = CheckerCore.Create(checkersParent, new Vector2(x, markerY));
+            rightCheckerOffset = new Vector2(x, markerY);
+
+            // Force a checker facing change to initialize edge checker
+            checkerFacingRight = false;
+            SetCheckerFacingRight(true);
 
             checkerInitialized = true;
             return x;
         };
+
         if (chunksToMaintain % 2 == 0) {
             return createCheckers(chunkExtent);
         } else {
@@ -128,6 +136,19 @@ public class ChunkLoaderCore : MonoBehaviour {
         if (checkersParent != null)
             Destroy(checkersParent);
         middleCheckers.Clear();
+        edgeChecker = null;
+    }
+
+    void SetCheckerFacingRight(bool facingRight) {
+        if (checkerFacingRight == facingRight)
+            return;
+        checkerFacingRight = facingRight;
+        Vector2 pos = checkerFacingRight ? rightCheckerOffset : leftCheckerOffset;
+        if (edgeChecker == null) {
+            edgeChecker = CheckerCore.Create(checkersParent, pos);
+        } else {
+            edgeChecker.transform.localPosition = pos.ToVector3();
+        }
     }
     #endregion
 
@@ -178,8 +199,10 @@ public class ChunkLoaderCore : MonoBehaviour {
 
     #region Destroyer
     private GameObject destroyersParent = null;
-    private DestroyerCore leftDestroyer = null;
-    private DestroyerCore rightDestroyer = null;
+    private DestroyerCore edgeDestroyer = null;
+    private Vector2 leftDestroyerOffset;
+    private Vector2 rightDestroyerOffset;
+    private bool destroyerFacingRight;
     private bool destroyerInitialized = false;
 
     void InitializedDestroyers(float minMargin) {
@@ -191,20 +214,38 @@ public class ChunkLoaderCore : MonoBehaviour {
         // Cleanup any old destroyers
         CleanupDestroyers();
         // Make destroyers' parent
-        destroyersParent = new GameObject("destroyers");
+        destroyersParent = new GameObject("Destroyers");
+        destroyersParent.transform.Reset();
         destroyersParent.transform.parent = transform;
 
         // Calculate positions and create destroyers
         // destroyers must be enough far from checkers to prevent infinite load/unload
-        float margin = minMargin + chunkSize.x;
-        leftDestroyer = DestroyerCore.Create(destroyersParent, new Vector2(-margin, markerY));
-        rightDestroyer = DestroyerCore.Create(destroyersParent, new Vector2(margin, markerY));
+        float margin = Mathf.Abs(leftCheckerOffset.x) + chunkSize.x;
+        leftDestroyerOffset = new Vector2(-margin, markerY);
+        rightDestroyerOffset = new Vector2(margin, markerY);
+
+        // Force a facing change to initialize the edge destroyer
+        destroyerFacingRight = false;
+        SetDestroyerFacingRight(true);
+
         destroyerInitialized = true;
     }
 
     void CleanupDestroyers() {
         if (destroyersParent != null)
             Destroy(destroyersParent);
+    }
+
+    void SetDestroyerFacingRight(bool facingRight) {
+        if (destroyerFacingRight == facingRight)
+            return;
+        destroyerFacingRight = facingRight;
+        Vector2 pos = destroyerFacingRight ? leftDestroyerOffset : rightDestroyerOffset;
+        if (edgeDestroyer == null) {
+            edgeDestroyer = DestroyerCore.Create(destroyersParent, pos);
+        } else {
+            edgeDestroyer.transform.localPosition = pos;
+        }
     }
     #endregion
 
@@ -219,12 +260,10 @@ public class ChunkLoaderCore : MonoBehaviour {
         // React to player facing change event
         EventHub.AddListener<PlayerFacingChanged>(e => {
             if (checkerInitialized) {
-                leftChecker.SetCheckerEnabled(!e.FacingRight);
-                rightChecker.SetCheckerEnabled(e.FacingRight);
+                SetCheckerFacingRight(e.FacingRight);
             }
             if (destroyerInitialized) {
-                leftDestroyer.SetDestroyerEnabled(e.FacingRight);
-                rightDestroyer.SetDestroyerEnabled(!e.FacingRight);
+                SetDestroyerFacingRight(e.FacingRight);
             }
         });
 	}

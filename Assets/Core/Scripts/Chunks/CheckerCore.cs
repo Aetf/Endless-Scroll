@@ -14,7 +14,7 @@ public class CheckerCore : MonoBehaviour {
         GameObject checker = Instantiate(PrefabsHub.ChunkChecker,
             position.ToVector3(),
             Quaternion.identity) as GameObject;
-        checker.transform.SetParent(parent.transform, true);
+        checker.transform.SetParent(parent.transform, false);
         return checker.GetComponent<CheckerCore>();
     }
 

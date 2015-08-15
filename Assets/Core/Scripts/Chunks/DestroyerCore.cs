@@ -11,7 +11,7 @@ public class DestroyerCore : MonoBehaviour {
         GameObject destroyer = Instantiate(PrefabsHub.ChunkDestroyer,
             position.ToVector3(),
             Quaternion.identity) as GameObject;
-        destroyer.transform.SetParent(parent.transform, true);
+        destroyer.transform.SetParent(parent.transform, false);
         return destroyer.GetComponent<DestroyerCore>();
     }
 
