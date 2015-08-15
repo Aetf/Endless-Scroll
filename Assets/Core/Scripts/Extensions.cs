@@ -16,19 +16,19 @@ public static class Extensions {
         return vec + new Vector3(x, y, z);
     }
 
-    public static Vector3 ChangeX(this Vector3 vec, float x) {
+    public static Vector3 ChangeXTo(this Vector3 vec, float x) {
         Vector3 res = vec;
         res.x = x;
         return res;
     }
 
-    public static Vector3 ChangeY(this Vector3 vec, float y) {
+    public static Vector3 ChangeYTo(this Vector3 vec, float y) {
         Vector3 res = vec;
         res.y = y;
         return res;
     }
 
-    public static Vector3 ChangeZ(this Vector3 vec, float z) {
+    public static Vector3 ChangeZTo(this Vector3 vec, float z) {
         Vector3 res = vec;
         res.z = z;
         return res;

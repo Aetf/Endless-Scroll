@@ -26,7 +26,7 @@ public class RandomChunkParameter : MonoBehaviour {
     void RandomizePlanePositions() {
         foreach (Transform plane in planes) {
             float x = Random.Range(-0.5f, 0.5f) * chunkSize.x;
-            plane.position = plane.position.ChangeX(x);
+            plane.position = plane.position.ChangeXTo(x);
         }
     }
 
