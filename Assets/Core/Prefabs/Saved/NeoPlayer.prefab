@@ -163,7 +163,7 @@ MonoBehaviour:
   m_MaxSpeed: 10
   m_JumpForce: 600
   m_CrouchSpeed: .360000014
-  m_AirControl: 0
+  m_AirControl: 1
   m_WhatIsGround:
     serializedVersion: 2
     m_Bits: 512
