@@ -24,6 +24,7 @@ public class CharacterCore : MonoBehaviour {
     private Animator m_Anim;            // Reference to the player's animator component.
     private Rigidbody2D m_Rigidbody2D;
     private bool m_FacingRight = true;  // For determining which way the player is currently facing.
+    private bool m_DoubleJumpAvaliable = true; // For double jumping
 
     private void Awake() {
         // Setting up references.
@@ -38,18 +39,21 @@ public class CharacterCore : MonoBehaviour {
 
 
     private void FixedUpdate() {
-        m_Grounded = false;
-
         // The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
         // This can be done using layers instead but Sample Assets will not overwrite your project settings.
+        bool grounded = false;
         Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsGround);
         for (int i = 0; i < colliders.Length; i++) {
-            if (colliders[i].gameObject != gameObject)
-                m_Grounded = true;
+            if (colliders[i].gameObject != gameObject) {
+                grounded = true;
+                break;
+            }
         }
-        m_Anim.SetBool("Ground", m_Grounded);
+        SetGrounded(grounded);
+        if (m_Grounded)
+            m_DoubleJumpAvaliable = true;
 
-        // Set the vertical animation
+        // Sync speed to animator
         m_Anim.SetFloat("vSpeed", m_Rigidbody2D.velocity.y);
     }
 
@@ -89,14 +93,26 @@ public class CharacterCore : MonoBehaviour {
             }
         }
         // If the player should jump...
-        if (m_Grounded && jump && m_Anim.GetBool("Ground")) {
+        if (m_Grounded && jump) {
+            SetGrounded(false);
             // Add a vertical force to the player.
-            m_Grounded = false;
-            m_Anim.SetBool("Ground", false);
+            m_Anim.SetTrigger("Jump");
+            m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+        } else if (!m_Grounded && jump && m_DoubleJumpAvaliable) {
+            m_DoubleJumpAvaliable = false;
+            // we can double jump!
+            m_Anim.SetTrigger("DoubleJump");
+            // cancel jumping velocity
+            m_Rigidbody2D.velocity = m_Rigidbody2D.velocity.ChangeYTo(0f);
+            // Add a vertical force to the player.
             m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
         }
     }
 
+    private void SetGrounded(bool grounded) {
+        m_Grounded = grounded;
+        m_Anim.SetBool("Ground", grounded);
+    }
 
     private void Flip() {
         // Switch the way the player is labeled as facing.

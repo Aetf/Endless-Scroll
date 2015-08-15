@@ -34,6 +34,18 @@ public static class Extensions {
         return res;
     }
 
+    public static Vector2 ChangeXTo(this Vector2 vec, float x) {
+        Vector2 res = vec;
+        res.x = x;
+        return res;
+    }
+
+    public static Vector2 ChangeYTo(this Vector2 vec, float y) {
+        Vector2 res = vec;
+        res.y = y;
+        return res;
+    }
+
     public static Vector2 Translate(this Vector2 vec, float x, float y) {
         return vec + new Vector2(x, y);
     }

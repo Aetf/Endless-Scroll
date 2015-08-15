@@ -303,7 +303,7 @@ MonoBehaviour:
   useMonoTarget: 1
   damping: 1
   lookAheadFactor: 3
-  lookAheadReturnSpeed: 30
+  lookAheadReturnSpeed: 100
   lookAheadMoveThreshold: .100000001
   xChangeStrategy: 0
   keepVerticalOffset: 1

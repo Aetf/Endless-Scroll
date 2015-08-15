@@ -25,8 +25,8 @@ GameObject:
   - 4: {fileID: 463018}
   - 212: {fileID: 21239440}
   - 95: {fileID: 9595628}
-  - 58: {fileID: 5829120}
   - 50: {fileID: 5043468}
+  - 58: {fileID: 5829120}
   - 61: {fileID: 6129612}
   - 114: {fileID: 11462932}
   - 114: {fileID: 11488668}
@@ -141,7 +141,7 @@ Animator:
   m_GameObject: {fileID: 125628}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 5fc43f0c4b413534ba12c51c0e5e5f6f, type: 2}
+  m_Controller: {fileID: 9100000, guid: a2bebe002cd8c894f93e1a229c4f5bec, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 1
   m_ApplyRootMotion: 0
@@ -161,7 +161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_MaxSpeed: 10
-  m_JumpForce: 600
+  m_JumpForce: 650
   m_CrouchSpeed: .360000014
   m_AirControl: 1
   m_WhatIsGround:
